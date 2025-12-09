@@ -1,0 +1,71 @@
+﻿@model RealEstateApp.Models.Property
+
+@{
+    ViewData["Title"] = "Delete Property";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Delete Property
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <strong>Warning!</strong> Are you sure you want to delete this property? This action cannot be undone.
+                    </div>
+
+                    <div class="row">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="col-md-4 mb-3">
+                                <img src="@Model.ImageUrl" alt="@Model.Title"
+                                     class="img-thumbnail w-100" style="max-height: 200px; object-fit: cover;" />
+                            </div>
+                        }
+
+                        <div class="@(string.IsNullOrEmpty(Model.ImageUrl) ? "col-md-12" : "col-md-8")">
+                            <dl class="row">
+                                <dt class="col-sm-4">Title:</dt>
+                                <dd class="col-sm-8">@Model.Title</dd>
+
+                                <dt class="col-sm-4">Category:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-primary">@Model.Category?.Name</span>
+                                </dd>
+
+                                <dt class="col-sm-4">Price:</dt>
+                                <dd class="col-sm-8 text-success fw-bold">@Model.Price.ToString("C")</dd>
+
+                                <dt class="col-sm-4">Address:</dt>
+                                <dd class="col-sm-8">@Model.Address</dd>
+
+                                @if (!string.IsNullOrEmpty(Model.Description))
+                                {
+                                    <dt class="col-sm-4">Description:</dt>
+                                    <dd class="col-sm-8">@Model.Description</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete Property
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
