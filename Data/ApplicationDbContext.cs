@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore; // The Correct Namespace
 using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Models;
 using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace RealEstateApp.Data
 {
+    // Now this refers to the correct Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
