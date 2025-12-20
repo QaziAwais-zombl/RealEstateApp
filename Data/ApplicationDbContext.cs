@@ -15,6 +15,7 @@ namespace RealEstateApp.Data
 
         public DbSet<Property> Properties { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

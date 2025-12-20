@@ -17,6 +17,39 @@ html {
   min-height: 100%;
 }
 
+/* Black and White Minimalist Theme */
 body {
-  margin-bottom: 60px;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    background-color: #000000 !important;
+    border-bottom: 1px solid #333;
+}
+
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+}
+
+.btn-primary {
+    background-color: #000000;
+    border: 1px solid #000000;
+    color: #ffffff;
+}
+
+    .btn-primary:hover {
+        background-color: #333333;
+        border-color: #333333;
+    }
+
+.card {
+    border: 1px solid #000000;
+    border-radius: 0; /* Boxy look */
+}
+
+.table thead {
+    background-color: #000000;
+    color: #ffffff;
 }

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<RealEstateApp.Models.Property>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "All Properties";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-houses"></i> Browse Properties</h2>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-action="Create" class="btn btn-dark">
+                <i class="bi bi-plus-circle"></i> List Your Property
+            </a>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div style="height: 200px; overflow: hidden; position: relative;">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title" style="object-fit: cover; height: 100%; width: 100%;">
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center justify-content-center bg-secondary h-100 text-white">
+                                <i class="bi bi-camera-fill fs-1"></i>
+                            </div>
+                        }
+                        <div class="position-absolute top-0 end-0 p-2">
+                            <span class="badge bg-primary">@item.Category?.Name</span>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">@item.Title</h5>
+                        <h6 class="text-success fw-bold">@item.Price.ToString("C")</h6>
+                        <p class="card-text text-muted small"><i class="bi bi-geo-alt"></i> @item.Address</p>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">View Details</a>
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a asp-controller="Favorites" asp-action="Toggle" asp-route-propertyId="@item.Id"
+                                   class="btn btn-outline-danger btn-sm" title="Add to Favorites">
+                                    <i class="bi bi-heart"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Http;
 
 namespace RealEstateApp.Models
 {
@@ -46,5 +47,9 @@ namespace RealEstateApp.Models
         [NotMapped]
         [Display(Name = "Upload Image")]
         public IFormFile? ImageFile { get; set; }
+
+        public string? OwnerId { get; set; }
+        [ForeignKey("OwnerId")]
+        public virtual IdentityUser? Owner { get; set; }
     }
 }
