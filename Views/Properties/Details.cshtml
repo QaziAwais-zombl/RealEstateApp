@@ -4,7 +4,9 @@
 
 @{
     ViewData["Title"] = "Property Details";
-    var currentUserId = UserManager.GetUserId(User); // Get logged-in user ID
+    var currentUserId = UserManager.GetUserId(User);
+    var isAvailable = Model.Status == RealEstateApp.Models.PropertyStatus.Available;
+    var canRequestBuyOrRent = User.Identity.IsAuthenticated && Model.OwnerId != currentUserId && isAvailable;
 }
 
 <div class="container mt-4">
@@ -26,6 +28,8 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span class="badge bg-primary mb-2">@Model.Category?.Name</span>
+                            <span class="badge bg-info mb-2">@(Model.PropertyType == RealEstateApp.Models.PropertyType.ForSale ? "For Sale" : "For Rent")</span>
+                            <span class="badge @(isAvailable ? "bg-success" : "bg-secondary") mb-2">@Model.Status</span>
                             <h2 class="card-title">@Model.Title</h2>
                             <p class="text-muted"><i class="bi bi-geo-alt-fill"></i> @Model.Address</p>
                         </div>
@@ -39,11 +43,14 @@
                     <div class="mt-4 d-flex gap-2">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <a asp-controller="Favorites" asp-action="Toggle" asp-route-propertyId="@Model.Id" class="btn btn-outline-danger">
-                                <i class="bi bi-heart"></i> Add to Favorites
-                            </a>
+                            @if (isAvailable && Model.OwnerId != currentUserId)
+                            {
+                                <a asp-controller="Favorites" asp-action="Toggle" asp-route-propertyId="@Model.Id" class="btn btn-outline-danger">
+                                    <i class="bi bi-heart"></i> Add to Favorites
+                                </a>
+                            }
 
-                            @if (Model.OwnerId == currentUserId)
+                            @if (Model.OwnerId == currentUserId && isAvailable)
                             {
                                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Edit
@@ -51,6 +58,22 @@
                                 <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
                                     <i class="bi bi-trash"></i> Delete
                                 </a>
+                            }
+
+                            @if (canRequestBuyOrRent)
+                            {
+                                @if (Model.PropertyType == RealEstateApp.Models.PropertyType.ForSale)
+                                {
+                                    <a asp-controller="Transactions" asp-action="SendBuyRequest" asp-route-id="@Model.Id" class="btn btn-success">
+                                        <i class="bi bi-cart-check"></i> Request to Buy
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Transactions" asp-action="SendRentRequest" asp-route-id="@Model.Id" class="btn btn-primary">
+                                        <i class="bi bi-key"></i> Request to Rent
+                                    </a>
+                                }
                             }
                         }
 

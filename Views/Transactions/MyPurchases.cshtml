@@ -1,0 +1,65 @@
+@model IEnumerable<RealEstateApp.Models.Transaction>
+
+@{
+    ViewData["Title"] = "My Purchases";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-cart-check-fill"></i> My Purchases</h2>
+        <a asp-controller="Properties" asp-action="Index" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Browse Properties
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var transaction in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                @if (!string.IsNullOrEmpty(transaction.Property?.ImageUrl))
+                                {
+                                    <img src="@transaction.Property.ImageUrl" class="img-fluid rounded-start h-100" alt="@transaction.Property.Title" style="object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <div class="bg-secondary text-white text-center h-100 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-house-door" style="font-size: 3rem;"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <span class="badge bg-success mb-2">Purchased</span>
+                                    <h5 class="card-title">@transaction.Property?.Title</h5>
+                                    <p class="card-text text-muted small">
+                                        <i class="bi bi-geo-alt"></i> @transaction.Property?.Address
+                                    </p>
+                                    <p class="card-text"><strong>Purchase Price:</strong> @transaction.TransactionAmount.ToString("C")</p>
+                                    <p class="card-text"><strong>Purchase Date:</strong> @transaction.TransactionDate.ToString("MMM dd, yyyy")</p>
+                                    <p class="card-text"><strong>Seller:</strong> @transaction.Property?.Owner?.UserName</p>
+                                    
+                                    <a asp-controller="Properties" asp-action="Details" asp-route-id="@transaction.PropertyId" class="btn btn-sm btn-outline-primary mt-2">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
+            <p class="mt-3">You haven't purchased any properties yet.</p>
+            <a asp-controller="Properties" asp-action="Index" class="btn btn-primary">Browse Properties</a>
+        </div>
+    }
+</div>

@@ -1,0 +1,88 @@
+@model RealEstateApp.Models.PropertyRequest
+
+@{
+    ViewData["Title"] = Model.RequestType == RealEstateApp.Models.RequestType.Buy ? "Send Purchase Request" : "Send Rental Request";
+    var property = ViewBag.Property as RealEstateApp.Models.Property;
+    var actionName = Model.RequestType == RealEstateApp.Models.RequestType.Buy ? "SendBuyRequest" : "SendRentRequest";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header @(Model.RequestType == RealEstateApp.Models.RequestType.Buy ? "bg-success" : "bg-primary") text-white">
+                    <h2 class="mb-0">
+                        <i class="bi @(Model.RequestType == RealEstateApp.Models.RequestType.Buy ? "bi-cart-check" : "bi-key")"></i> 
+                        @ViewData["Title"]
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>Property Details</h5>
+                        <p><strong>Title:</strong> @property?.Title</p>
+                        <p><strong>Address:</strong> @property?.Address</p>
+                        <p><strong>@(Model.RequestType == RealEstateApp.Models.RequestType.Buy ? "Price" : "Monthly Rent"):</strong> @property?.Price.ToString("C")</p>
+                        <p><strong>Owner:</strong> @property?.Owner?.UserName</p>
+                    </div>
+
+                    <form asp-action="@actionName" method="post">
+                        <input type="hidden" asp-for="PropertyId" value="@property?.Id" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <h5 class="mb-3">Your Information</h5>
+
+                        <div class="mb-3">
+                            <label asp-for="BuyerRenterName" class="form-label">Full Name</label>
+                            <input asp-for="BuyerRenterName" class="form-control" placeholder="Enter your full name" required />
+                            <span asp-validation-for="BuyerRenterName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BuyerRenterEmail" class="form-label">Email</label>
+                            <input asp-for="BuyerRenterEmail" type="email" class="form-control" placeholder="Enter your email" required />
+                            <span asp-validation-for="BuyerRenterEmail" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BuyerRenterPhone" class="form-label">Phone Number</label>
+                            <input asp-for="BuyerRenterPhone" type="tel" class="form-control" placeholder="Enter your phone number" required />
+                            <span asp-validation-for="BuyerRenterPhone" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BuyerRenterAddress" class="form-label">Your Address</label>
+                            <input asp-for="BuyerRenterAddress" class="form-control" placeholder="Enter your address" required />
+                            <span asp-validation-for="BuyerRenterAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Message" class="form-label">Message (Optional)</label>
+                            <textarea asp-for="Message" class="form-control" rows="3" placeholder="Add a message to the seller"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-info-circle"></i> Your request will be sent to the property owner for approval. 
+                            You will be notified once they respond.
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-controller="Properties" asp-action="Details" asp-route-id="@property?.Id" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn @(Model.RequestType == RealEstateApp.Models.RequestType.Buy ? "btn-success" : "btn-primary")">
+                                <i class="bi bi-send"></i> Send Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -25,6 +25,14 @@
         </div>
     }
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <div class="row">
         @foreach (var item in Model)
         {
@@ -43,18 +51,23 @@
                         }
                         <div class="position-absolute top-0 end-0 p-2">
                             <span class="badge bg-primary">@item.Category?.Name</span>
+                            <span class="badge bg-info">@(item.PropertyType == RealEstateApp.Models.PropertyType.ForSale ? "Sale" : "Rent")</span>
+                            @if (item.Status != RealEstateApp.Models.PropertyStatus.Available)
+                            {
+                                <span class="badge bg-secondary">@item.Status</span>
+                            }
                         </div>
                     </div>
 
                     <div class="card-body">
                         <h5 class="card-title text-truncate">@item.Title</h5>
-                        <h6 class="text-success fw-bold">@item.Price.ToString("C")</h6>
+                        <h6 class="text-success fw-bold">@item.Price.ToString("C")@(item.PropertyType == RealEstateApp.Models.PropertyType.ForRent ? "/mo" : "")</h6>
                         <p class="card-text text-muted small"><i class="bi bi-geo-alt"></i> @item.Address</p>
 
                         <div class="d-flex justify-content-between mt-3">
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">View Details</a>
 
-                            @if (User.Identity.IsAuthenticated)
+                            @if (User.Identity.IsAuthenticated && item.Status == RealEstateApp.Models.PropertyStatus.Available)
                             {
                                 <a asp-controller="Favorites" asp-action="Toggle" asp-route-propertyId="@item.Id"
                                    class="btn btn-outline-danger btn-sm" title="Add to Favorites">

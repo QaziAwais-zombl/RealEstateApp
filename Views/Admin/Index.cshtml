@@ -1,0 +1,237 @@
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+@{
+    ViewData["Title"] = "Admin Panel";
+    var properties = ViewBag.Properties as IEnumerable<RealEstateApp.Models.Property>;
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-shield-lock"></i> Admin Panel</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- User Management Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0"><i class="bi bi-people"></i> User Management</h3>
+        </div>
+        <div class="card-body">
+            <!-- Create User Form -->
+            <div class="mb-4">
+                <h5>Create New User</h5>
+                <form asp-action="CreateUser" method="post" class="row g-3">
+                    @Html.AntiForgeryToken()
+                    <div class="col-md-5">
+                        <input type="email" class="form-control" name="email" placeholder="Email Address" required />
+                    </div>
+                    <div class="col-md-5">
+                        <input type="password" class="form-control" name="password" placeholder="Password" required />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-plus-circle"></i> Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>User ID</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Email Confirmed</th>
+                            <th>Properties</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var user in Model)
+                            {
+                                var userPropertyCount = properties?.Count(p => p.OwnerId == user.Id) ?? 0;
+                                <tr>
+                                    <td>@user.Id.Substring(0, 8)...</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.UserName</td>
+                                    <td>
+                                        @if (user.EmailConfirmed)
+                                        {
+                                            <span class="badge bg-success">Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">No</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (userPropertyCount > 0)
+                                        {
+                                            <span class="badge bg-info">@userPropertyCount</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">0</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <form asp-action="DeleteUser" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@user.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm" 
+                                                    onclick="return confirm('?? WARNING: This will permanently delete:\n\n• The user account\n• All @userPropertyCount properties owned by this user\n• All favorites, requests, and transactions related to this user\n\nThis action cannot be undone!\n\nAre you sure you want to proceed?');">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center">No users found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Management Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0"><i class="bi bi-houses"></i> Property Management</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Owner</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (properties != null && properties.Any())
+                        {
+                            @foreach (var property in properties)
+                            {
+                                <tr>
+                                    <td>@property.Id</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(property.ImageUrl))
+                                        {
+                                            <img src="@property.ImageUrl" alt="Property" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-secondary text-white text-center" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-image"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Properties" asp-action="Details" asp-route-id="@property.Id" target="_blank">
+                                            @property.Title
+                                        </a>
+                                    </td>
+                                    <td>@property.Owner?.UserName</td>
+                                    <td><span class="badge bg-primary">@property.Category?.Name</span></td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            @(property.PropertyType == RealEstateApp.Models.PropertyType.ForSale ? "For Sale" : "For Rent")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(property.Status == RealEstateApp.Models.PropertyStatus.Available ? "bg-success" : "bg-secondary")">
+                                            @property.Status
+                                        </span>
+                                    </td>
+                                    <td>@property.Price.ToString("C")</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-controller="Properties" asp-action="Details" asp-route-id="@property.Id" 
+                                               class="btn btn-info btn-sm" target="_blank" title="View Property">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <form asp-action="DeleteProperty" method="post" style="display:inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@property.Id" />
+                                                <button type="submit" class="btn btn-danger btn-sm" 
+                                                        title="Delete Property"
+                                                        onclick="return confirm('?? WARNING: This will permanently delete:\n\n• The property listing\n• Property image\n• All favorites for this property\n• All requests for this property\n• All transactions for this property\n\nThis action cannot be undone!\n\nAre you sure?');">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center">No properties found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people-fill"></i> Total Users</h5>
+                    <h2 class="text-primary">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-house-fill"></i> Total Properties</h5>
+                    <h2 class="text-success">@(properties?.Count() ?? 0)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-check-circle-fill"></i> Available Properties</h5>
+                    <h2 class="text-info">@(properties?.Count(p => p.Status == RealEstateApp.Models.PropertyStatus.Available) ?? 0)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RealEstateApp.Data;
 
@@ -11,9 +12,11 @@ using RealEstateApp.Data;
 namespace RealEstateApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251224192742_AddPropertyTypeStatusAndTransactions")]
+    partial class AddPropertyTypeStatusAndTransactions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,68 +341,6 @@ namespace RealEstateApp.Migrations
                     b.ToTable("Properties");
                 });
 
-            modelBuilder.Entity("RealEstateApp.Models.PropertyRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BuyerRenterAddress")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("BuyerRenterEmail")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("BuyerRenterName")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("BuyerRenterPhone")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InterestedUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Message")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RequestType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("RespondedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InterestedUserId");
-
-                    b.HasIndex("PropertyId");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("PropertyRequests");
-                });
-
             modelBuilder.Entity("RealEstateApp.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -534,33 +475,6 @@ namespace RealEstateApp.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("RealEstateApp.Models.PropertyRequest", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "InterestedUser")
-                        .WithMany()
-                        .HasForeignKey("InterestedUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("RealEstateApp.Models.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Seller")
-                        .WithMany()
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("InterestedUser");
-
-                    b.Navigation("Property");
-
-                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("RealEstateApp.Models.Transaction", b =>

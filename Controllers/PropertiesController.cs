@@ -68,10 +68,11 @@ namespace RealEstateApp.Controllers
         // POST: Properties/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Price,Address,CategoryId,ImageFile")] Property property)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Price,Address,CategoryId,PropertyType,ImageFile")] Property property)
         {
             // 1. Assign the logged-in user as the Owner
             property.OwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            property.Status = PropertyStatus.Available;
 
             if (ModelState.IsValid)
             {
@@ -122,7 +123,7 @@ namespace RealEstateApp.Controllers
         // POST: Properties/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,Address,CategoryId,ImageUrl,ImageFile,OwnerId")] Property property)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,Address,CategoryId,PropertyType,Status,ImageUrl,ImageFile,OwnerId")] Property property)
         {
             if (id != property.Id) return NotFound();
 

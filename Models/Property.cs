@@ -43,6 +43,14 @@ namespace RealEstateApp.Models
         [ForeignKey("CategoryId")]
         public Category? Category { get; set; }
 
+        [Required]
+        [Display(Name = "Property Type")]
+        public PropertyType PropertyType { get; set; } = PropertyType.ForSale;
+
+        [Required]
+        [Display(Name = "Status")]
+        public PropertyStatus Status { get; set; } = PropertyStatus.Available;
+
         // Not mapped to database - used for file upload
         [NotMapped]
         [Display(Name = "Upload Image")]
@@ -51,5 +59,7 @@ namespace RealEstateApp.Models
         public string? OwnerId { get; set; }
         [ForeignKey("OwnerId")]
         public virtual IdentityUser? Owner { get; set; }
+
+        public virtual ICollection<Transaction>? Transactions { get; set; }
     }
 }

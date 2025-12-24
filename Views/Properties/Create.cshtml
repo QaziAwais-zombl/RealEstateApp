@@ -49,6 +49,15 @@
                         </div>
 
                         <div class="mb-3">
+                            <label asp-for="PropertyType" class="form-label"></label>
+                            <select asp-for="PropertyType" class="form-select">
+                                <option value="1">For Sale</option>
+                                <option value="2">For Rent</option>
+                            </select>
+                            <span asp-validation-for="PropertyType" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
                             <label asp-for="Address" class="form-label"></label>
                             <input asp-for="Address" class="form-control" placeholder="Enter property address" />
                             <span asp-validation-for="Address" class="text-danger"></span>
