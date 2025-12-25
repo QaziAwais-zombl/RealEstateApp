@@ -53,3 +53,43 @@ body {
     background-color: #000000;
     color: #ffffff;
 }
+
+/* Login/Register Page Styling */
+.btn-dark {
+    background-color: #000000;
+    border: 1px solid #000000;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+    .btn-dark:hover {
+        background-color: #333333;
+        border-color: #333333;
+        color: #ffffff;
+    }
+
+.form-control:focus {
+    border-color: #000000;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+}
+
+.form-check-input:checked {
+    background-color: #000000;
+    border-color: #000000;
+}
+
+.form-check-input:focus {
+    border-color: #000000;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+}
+
+.input-group-text {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    color: #000000;
+}
+
+a.text-dark:hover {
+    color: #333333 !important;
+    text-decoration: underline !important;
+}

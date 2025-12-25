@@ -1,0 +1,77 @@
+@model RealEstateApp.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow-lg border-dark">
+                <div class="card-header bg-dark text-white text-center py-4">
+                    <h2 class="mb-0">
+                        <i class="bi bi-person-circle"></i> Login
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Login" method="post">
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                        }
+                        
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label fw-bold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-dark">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                <input asp-for="Email" class="form-control border-dark" placeholder="Enter your email" autofocus />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label fw-bold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-dark">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                <input asp-for="Password" class="form-control border-dark" placeholder="Enter your password" />
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4 form-check">
+                            <input asp-for="RememberMe" class="form-check-input border-dark" />
+                            <label asp-for="RememberMe" class="form-check-label"></label>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-dark btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </button>
+                        </div>
+
+                        <hr class="my-4 border-dark">
+
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Don't have an account? 
+                                <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="text-dark fw-bold text-decoration-none">
+                                    Register here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
